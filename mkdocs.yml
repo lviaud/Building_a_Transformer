@@ -18,6 +18,9 @@ theme:
     accent: teal
 nav:
   - Accueil: index.md
+  - 'Chapitre 1 — Construire notre vocabulaire': chapter-01-building-our-vocabulary.md
+  - 'Chapitre 2 — Tokenisation': chapter-02-tokenization.md
+  - 'Chapitre 3 — Embeddings': chapter-03-embeddings.md
   - 'Chapitre 4 — Encodage positionnel': chapter-04-positional-encoding.md
   - Glossaire: glossaire.md
   - Notes de traduction: notes-traduction.md
@@ -38,3 +41,4 @@ extra_javascript:
 extra_css:
   - stylesheets/extra.css
 copyright: Cours original de Rimom Costa · Traduction française non officielle
+
