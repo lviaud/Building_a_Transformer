@@ -1,10 +1,13 @@
 # Traduction française et publication
 
-Les chapitres anglais à la racine sont conservés. La version française se trouve dans `fr/`. Le premier chapitre traduit est le chapitre 4.
+Les chapitres anglais à la racine sont conservés. La version française se trouve dans `fr/`. Les chapitres 1 à 4 sont traduits et reliés dans leur ordre de lecture.
 
 ## Lire et relire
 
 - [Accueil français](fr/index.md)
+- [Chapitre 1 — Construire notre vocabulaire](fr/chapter-01-building-our-vocabulary.md)
+- [Chapitre 2 — Tokenisation](fr/chapter-02-tokenization.md)
+- [Chapitre 3 — Embeddings](fr/chapter-03-embeddings.md)
 - [Chapitre 4](fr/chapter-04-positional-encoding.md)
 - [Glossaire](fr/glossaire.md)
 - [Notes de traduction](fr/notes-traduction.md)
@@ -53,6 +56,7 @@ Cette adresse n'est pas une preuve de déploiement : vérifier le résultat du w
 
 ## Suivre les mises à jour de l'original
 
-La traduction du chapitre 4 est fondée sur le commit `d8e275a2c41426889e116bfa6d64090805b3bd9a`. Comparer ce fichier à la nouvelle version avant de modifier la traduction ; conserver les corrections humaines et mettre à jour le SHA source après relecture.
+Les traductions des chapitres 1 à 4 sont fondées sur le commit `d8e275a2c41426889e116bfa6d64090805b3bd9a`. Comparer les fichiers concernés à la nouvelle version avant de modifier leur traduction ; conserver les corrections humaines et mettre à jour le SHA source après relecture.
 
 La synchronisation du fork avec le dépôt d'origine ne retraduit pas automatiquement les documents.
+
