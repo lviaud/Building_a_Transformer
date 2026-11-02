@@ -1,14 +1,14 @@
 # Notes de traduction et précisions techniques
 
-Cette page distingue la traduction des chapitres 1 à 4 des précisions apportées lors de leur préparation. Le texte original est celui de **Rimom Costa**, dans le dépôt [Building_a_Transformer](https://github.com/rimomcosta/Building_a_Transformer), au commit `d8e275a2c41426889e116bfa6d64090805b3bd9a`.
+Cette page distingue la traduction des chapitres 1 à 6 des précisions apportées lors de leur préparation. Le texte original est celui de **Rimom Costa**, dans le dépôt [Building_a_Transformer](https://github.com/rimomcosta/Building_a_Transformer), au commit `d8e275a2c41426889e116bfa6d64090805b3bd9a`.
 
 ## Choix de traduction
 
-- Les sections des chapitres 1 à 3 et les neuf parties du chapitre 4 sont conservées, ainsi que les tableaux, formules et exemples numériques.
+- Les sections des chapitres 1 à 6 sont conservées, ainsi que les tableaux, formules et exemples numériques. Les blocs mathématiques sont adaptés à l'affichage MathJax sans changer les expressions.
 - Les phrases anglaises associées aux vecteurs restent en anglais pour conserver leurs positions. Par exemple, « I love pizza » comporte trois mots ; sa traduction française ne conserverait pas nécessairement ce découpage.
 - Les légendes et explications sont traduites. Les identifiants symboliques du pseudo-code restent inchangés.
 - Les valeurs arrondies proviennent de la source. Des égalités numériques sont parfois approximatives : lire « ≈ » lorsque les valeurs affichées sont arrondies.
-- Les chapitres 1 à 4 sont reliés en français. Les liens vers les chapitres 0, 5 et 11 conduisent aux versions anglaises du fork.
+- Les chapitres 1 à 6 sont reliés en français. Les liens vers les chapitres 0, 7, 11 et 12 conduisent aux versions anglaises du fork.
 
 ## Précisions sur les chapitres 1 à 3
 
@@ -77,4 +77,77 @@ La matrice de la note avancée correspond à la fréquence 1 et à l'ordre de co
 Enfin, les sinus et cosinus ne sont pas les seules fonctions ayant une relation de décalage linéaire : les exponentielles et une base polynomiale adaptée en possèdent aussi. Leur intérêt ici réside notamment dans la combinaison de valeurs bornées et de plusieurs fréquences.
 
 La section 3.5 de [Attention Is All You Need](https://arxiv.org/html/1706.03762v7#S3.SS5) présente la construction sinusoïdale et l'hypothèse selon laquelle ces relations facilitent l'apprentissage des positions relatives. Les précisions et calculs ci-dessus sont des notes de relecture, distinctes du cours original.
+
+## Précisions sur le chapitre 5
+
+### Des projections par tête, pas nécessairement un découpage de l'entrée
+
+La source commence par diviser le vecteur de dimension 6 en deux morceaux de dimension 3, puis applique des matrices 3×3. Cela constitue un petit modèle pédagogique différent de l'attention multi-têtes standard.
+
+Dans la construction standard, chaque tête reçoit la représentation complète et dispose de projections apprises vers son propre espace. Les dimensions des matrices sont décrites dans la section 3.2.2 de [Attention Is All You Need](https://arxiv.org/html/1706.03762v7#S3.SS2.SSS2).
+
+Pour une entrée de dimension 6 et deux têtes de dimension 3, chaque projection de tête est donc 6×3. Sans biais, Q, K et V totalisent $3\times2\times6\times3=108$ paramètres. La projection de sortie 6×6 ajoute 36 paramètres, soit **144**, autant que trois projections 6×6 et une projection de sortie 6×6 pour une tête de dimension 6. Les nombres 54 et 90 de la source décrivent son découpage simplifié, pas ce décompte standard.
+
+Les spécialisations linguistiques attribuées aux têtes sont des exemples hypothétiques. Elles ne sont ni imposées ni garanties. De même, le coût en temps et en mémoire dépend de l'implémentation : les poids d'attention comportent notamment une matrice par tête.
+
+### Les pourcentages des analogies ne sont pas les softmax calculés
+
+Les exemples de rencontres et l'aperçu initial utilisent des répartitions illustratives. Un calcul direct donne :
+
+| Scores et ordre des profils | Résultat présenté par la source | Softmax recalculé |
+| --- | --- | --- |
+| [0.15, 0.42, 0.89] | [19 %, 31 %, 50 %] | Environ [22.70 %, 29.73 %, 47.57 %] |
+| [95, 55, 15], Alex, Casey, Blake | [80 %, 18 %, 2 %] | Alex reçoit presque 100 % ; les autres poids valent environ $4.25\times10^{-18}$ et $1.80\times10^{-35}$ |
+| [220, 180, 140], Alex, Casey, Blake | [85 %, 13 %, 2 %] | Même répartition que la ligne précédente, puisque les écarts sont identiques |
+
+Les deux dernières valeurs sont des poids entre 0 et 1, et non des pourcentages. On peut stabiliser le calcul en soustrayant le maximum des scores avant l'exponentielle : cela ne modifie pas le résultat mathématique.
+
+Softmax conserve l'ordre, mais ne donne pas toujours une distribution très concentrée : celle-ci dépend des écarts entre scores. Pour des scores finis, les poids sont strictement positifs en arithmétique exacte ; des masques ou la précision numérique peuvent néanmoins produire des zéros.
+
+### Le produit scalaire dépend aussi de la norme
+
+Le produit scalaire est un score de compatibilité qui dépend de l'angle **et de la norme** des vecteurs. « Produit élevé » ne signifie donc pas automatiquement « mêmes significations », et « produit négatif » ne signifie pas « antonymes ». Les questions et les clés sont des projections apprises : leurs interprétations dans les analogies ne doivent pas être prises comme des étiquettes littérales.
+
+### Relire la matrice de l'exemple Beyoncé
+
+Les colonnes affichées sont « Beyoncé, Vous ». Dans cet ordre, la seconde ligne [0.001 %, 99.999 %] donnerait presque tout le poids à « Vous », contrairement au commentaire. Pour représenter l'intention de la source en gardant cet ordre de colonnes, les deux valeurs de cette ligne devraient être permutées. Le tableau original est conservé et signalé dans la traduction.
+
+### Vérifications numériques de la tête 1
+
+Les formules et nombres de la source sont conservés, mais un calcul avec ses matrices révèle notamment une erreur dans la troisième composante de $V_{\text{love}}$ :
+
+$$0.44\times0.2+1.14\times0.1+0.05\times0.3=0.217$$
+
+La source donne -0.055. En recalculant depuis les vecteurs d'entrée et les matrices affichées, on obtient pour « I » :
+
+- Scores non mis à l'échelle : environ [-0.042727, -0.024617, 0.284086].
+- Poids après division par $\sqrt{3}$ et softmax : environ [0.310735, 0.314001, 0.375263].
+- Sortie recalculée de la tête 1 : environ **[0.170630, 0.198709, 0.225533]**, au lieu de [0.1706, 0.1987, 0.1401].
+
+Les matrices de la tête 2 ne sont pas indiquées. Sa sortie [0.245, -0.089, 0.156] est donc traitée comme une donnée illustrative, pas comme un résultat reproductible à partir des seules informations du chapitre.
+
+Enfin, le produit du vecteur concaténé **tel qu'affiché par la source** par sa matrice $W^O$ vaut :
+
+$$[0.07619, 0.14538, 0.09446, 0.04753, 0.16343, 0.06277]$$
+
+Il ne correspond pas à [0.25, -0.31, 0.42, 0.18, -0.09, 0.33]. Ce dernier vecteur est conservé comme illustration dans les chapitres 5 et 6 pour maintenir leur continuité, sans le présenter comme le résultat vérifié de cette multiplication.
+
+## Précisions sur le chapitre 6
+
+### Probabilité de suppression et nombre effectivement supprimé
+
+Un taux de 10 % est une probabilité par activation, pas la garantie de supprimer exactement 10 % des composantes à chaque passage. Avec six composantes indépendantes, le nombre moyen supprimé est 0.6, et la probabilité de n'en supprimer aucune vaut $0.9^6=0.531441$, soit environ 53.14 %. Le premier masque, composé uniquement de 1, est donc tout à fait possible.
+
+### Préserver l'espérance avec le dropout inversé
+
+Dans la convention du chapitre, chaque activation conservée est divisée par $1-p$ pendant l'entraînement. Si $m$ vaut 1 avec probabilité $1-p$ et 0 sinon, la sortie est $mx/(1-p)$ et son espérance vaut $x$. Cela ne garantit pas de préserver la somme pour chaque masque, notamment avec des composantes de signes différents. À l'évaluation, cette opération devient l'identité. Voir la [documentation de Dropout dans PyTorch](https://docs.pytorch.org/docs/stable/generated/torch.nn.Dropout.html).
+
+Le terme « désactiver un neurone » est une image : ici, on met des activations à zéro pour un passage, sans supprimer définitivement de paramètres du réseau.
+
+### Emplacements, taux et analogie d'ensemble
+
+Les deux emplacements retenus par le chapitre ne forment pas une liste exhaustive. D'autres emplacements existent selon l'architecture, et les taux 0.1 à 0.3 cités ne sont pas une règle générale. Leur pertinence doit être évaluée dans le contexte de l'entraînement.
+
+L'image de sous-réseaux partageant leurs poids est utile pour comprendre le dropout. Pour un réseau non linéaire, utiliser toutes les activations à l'inférence n'équivaut toutefois pas, en général, à calculer exactement la moyenne des sorties de tous les sous-réseaux.
+
 

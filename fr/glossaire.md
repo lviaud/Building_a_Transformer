@@ -27,6 +27,28 @@ Les termes suivants servent de référence pour garder une traduction cohérente
 | attention | attention |
 | self-attention | auto-attention |
 | multi-head self-attention | auto-attention multi-têtes |
+| attention head | tête d'attention |
+| query (Q) | requête ; vecteur comparé aux clés |
+| key (K) | clé ; vecteur utilisé pour calculer un score avec une requête |
+| value (V) | valeur ; vecteur d'information entrant dans la somme pondérée |
+| attention score | score d'attention, avant normalisation |
+| attention weight | poids d'attention, après softmax |
+| weight matrix | matrice de poids ; paramètres entraînables |
+| dot product | produit scalaire |
+| scaled dot-product attention | attention par produit scalaire mis à l'échelle |
+| softmax | softmax ; normalisation exponentielle en poids positifs de somme 1 |
+| weighted sum | somme pondérée |
+| concatenation | concaténation ; juxtaposition des composantes des vecteurs |
+| output projection | projection de sortie |
+| causal masking | masquage causal |
+| dropout | dropout ; mise à zéro aléatoire d'activations à l'entraînement |
+| dropout rate | taux de dropout ; probabilité de suppression |
+| mask | masque ; ici, indicateurs de conservation ou de suppression |
+| overfitting | surapprentissage |
+| regularization | régularisation |
+| expected value | espérance |
+| residual connection | connexion résiduelle |
+| feed-forward network | réseau feed-forward ; réseau appliqué à chaque position |
 | training | entraînement |
 | inference | inférence |
 | backpropagation | rétropropagation |
@@ -40,5 +62,6 @@ Les termes suivants servent de référence pour garder une traduction cohérente
 | frozen | fixe, non entraînable |
 | fingerprint | empreinte |
 
-Dans les blocs de pseudo-code, certains noms symboliques comme `WordMeaning`, `PositionNumber` et `learning_rate` restent inchangés. Les phrases anglaises associées à des vecteurs sont également conservées.
+Dans les blocs de pseudo-code et les formules, certains noms symboliques comme `WordMeaning`, `PositionNumber`, `learning_rate`, `Output` ou `score` restent inchangés. Les phrases anglaises associées à des vecteurs sont également conservées.
+
 
