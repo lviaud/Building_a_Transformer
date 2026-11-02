@@ -1647,6 +1647,6 @@ Cette propriété donne aux encodages sinusoïdaux leur élégance théorique. E
 
 ---
 
-**Navigation dans le cours :** [Précédent : chapitre 3 — Embeddings](chapter-03-embeddings.md) | [Suivant : chapitre 5 — Auto-attention multi-têtes (anglais)](https://github.com/lviaud/Building_a_Transformer/blob/main/chapter-05-multi-head-self-attention.md)
+**Navigation dans le cours :** [Précédent : chapitre 3 — Embeddings](chapter-03-embeddings.md) | [Suivant : chapitre 5 — Auto-attention multi-têtes](chapter-05-multi-head-self-attention.md)
 
 
