@@ -1,16 +1,44 @@
 # Notes de traduction et précisions techniques
 
-Cette page distingue la traduction du chapitre des précisions apportées lors de sa préparation. Le texte original est celui de **Rimom Costa**, dans le dépôt [Building_a_Transformer](https://github.com/rimomcosta/Building_a_Transformer), au commit `d8e275a2c41426889e116bfa6d64090805b3bd9a`.
+Cette page distingue la traduction des chapitres 1 à 4 des précisions apportées lors de leur préparation. Le texte original est celui de **Rimom Costa**, dans le dépôt [Building_a_Transformer](https://github.com/rimomcosta/Building_a_Transformer), au commit `d8e275a2c41426889e116bfa6d64090805b3bd9a`.
 
 ## Choix de traduction
 
-- Les neuf parties du chapitre sont conservées, ainsi que les tableaux, formules et exemples numériques.
+- Les sections des chapitres 1 à 3 et les neuf parties du chapitre 4 sont conservées, ainsi que les tableaux, formules et exemples numériques.
 - Les phrases anglaises associées aux vecteurs restent en anglais pour conserver leurs positions. Par exemple, « I love pizza » comporte trois mots ; sa traduction française ne conserverait pas nécessairement ce découpage.
 - Les légendes et explications sont traduites. Les identifiants symboliques du pseudo-code restent inchangés.
 - Les valeurs arrondies proviennent de la source. Des égalités numériques sont parfois approximatives : lire « ≈ » lorsque les valeurs affichées sont arrondies.
-- Les liens vers les chapitres 3 et 5 conduisent aux versions anglaises du fork, tant qu'ils ne sont pas traduits.
+- Les chapitres 1 à 4 sont reliés en français. Les liens vers les chapitres 0, 5 et 11 conduisent aux versions anglaises du fork.
 
-## Précisions sur le chapitre original
+## Précisions sur les chapitres 1 à 3
+
+### Tokens et mots ne sont pas équivalents
+
+Un token peut être un mot, un sous-mot ou une unité plus petite. Le cours utilise des mots entiers dans son exemple pour simplifier. Les identifiants 123, 567 et 999 sont ceux du vocabulaire fictif du tutoriel, pas les identifiants garantis d'un tokeniseur existant. Les tokens spéciaux `<pad>`, `<start>` et `<end>` sont également ceux de cet exemple.
+
+### Vocabulaire et accès aux embeddings
+
+La taille du vocabulaire constitue un compromis entre la longueur des séquences de tokens et la taille des matrices du modèle. Elle ne signifie pas que chaque recherche d'embedding exige de parcourir toutes les entrées : l'identifiant permet d'accéder à une ligne. Avec 50 000 entrées et 12 288 dimensions, le calcul donne 614 400 000 valeurs ; la valeur de 614 millions citée est arrondie.
+
+### BPE : une intuition de découpage, des règles de fusion
+
+Le chapitre 2 présente le découpage en morceaux connus comme une intuition. Dans BPE, l'entraînement apprend des fusions de paires fréquentes. L'encodage applique ensuite les règles et leur priorité à la séquence d'unités initiales ; ce n'est pas une recherche arbitraire de deux morceaux dans un dictionnaire. Voir la [présentation de BPE par Hugging Face](https://huggingface.co/docs/course/en/chapter6/5).
+
+Le déterminisme suppose un tokeniseur et des réglages fixes, sans stratégie d'échantillonnage. La réversibilité exacte dépend aussi de la normalisation : par exemple, convertir les majuscules en minuscules peut faire perdre la casse d'origine. Les [composants d'un tokeniseur](https://huggingface.co/docs/tokenizers/components) précisent le rôle de la normalisation et du décodage.
+
+### La dimension d'un modèle n'est pas universelle
+
+La valeur 12 288 citée dans le chapitre 3 correspond à GPT-3 à 175 milliards de paramètres. Elle ne décrit pas tous les modèles de conversation. La traduction précise ce point au lieu de présenter cette taille comme universelle. Voir le tableau 2.1 de [Language Models are Few-Shot Learners](https://arxiv.org/abs/2005.14165).
+
+### Sens distribué, antonymes et contexte
+
+Les étiquettes « nourriture », « sentiment », « nom ou verbe » servent d'analogies. Une dimension ne correspond pas nécessairement à une propriété humaine identifiable, et augmenter le nombre de dimensions ne garantit pas à lui seul une meilleure compréhension.
+
+La proximité entre vecteurs ne constitue pas une simple échelle d'opposition sémantique. Des antonymes peuvent apparaître dans des contextes semblables et avoir des représentations proches ; ils ne sont pas obligatoirement éloignés ou orientés dans des directions opposées.
+
+Enfin, l'embedding initial d'un token est une ligne de la table. Les représentations qui distinguent ses sens selon le contexte sont construites dans les couches du Transformer. Les nombres du tableau sont des valeurs d'illustration : on ne doit pas y lire une signification sémantique déjà apprise avant l'entraînement.
+
+## Précisions sur le chapitre 4
 
 ### Longueurs et indices de certains exemples
 
@@ -49,3 +77,4 @@ La matrice de la note avancée correspond à la fréquence 1 et à l'ordre de co
 Enfin, les sinus et cosinus ne sont pas les seules fonctions ayant une relation de décalage linéaire : les exponentielles et une base polynomiale adaptée en possèdent aussi. Leur intérêt ici réside notamment dans la combinaison de valeurs bornées et de plusieurs fréquences.
 
 La section 3.5 de [Attention Is All You Need](https://arxiv.org/html/1706.03762v7#S3.SS5) présente la construction sinusoïdale et l'hypothèse selon laquelle ces relations facilitent l'apprentissage des positions relatives. Les précisions et calculs ci-dessus sont des notes de relecture, distinctes du cours original.
+
